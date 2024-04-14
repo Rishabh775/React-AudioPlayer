@@ -1,5 +1,3 @@
-#LOOP
-
 ## Preview
 
 ![Loop Screenshot](https://i.postimg.cc/jSjzCR9v/image.png)
