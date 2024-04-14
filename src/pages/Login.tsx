@@ -16,7 +16,7 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/auth/login",
+          "https://loop-server.onrender.com/api/auth/login",
           values // Send the entire 'values' object containing 'identifier' and 'password'
         );
 

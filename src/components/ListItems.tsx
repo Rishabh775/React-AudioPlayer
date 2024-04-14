@@ -1,20 +1,31 @@
 import { useEffect, useRef, useState } from "react";
 import { FaPlay, FaPause, FaForward, FaBackward } from "react-icons/fa";
 import dummyData from "../data/DummyData";
-import loop from "../assets/images/loop.png";
+// import loop from "../assets/images/loop.png";
+
+interface Song {
+  music_id: number;
+  music_file: string;
+  poster: string;
+  artist: string;
+  music_name: string;
+}
+
+interface CurrentSong extends Song {}
 
 export default function ListItems() {
-  const [currentSong, setCurrentSong] = useState({
+  const [currentSong, setCurrentSong] = useState<CurrentSong>({
+    music_id: 0,
     music_file: "",
     poster: "",
     artist: "",
     music_name: "",
   });
 
-  const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
 
   const playNextSong = () => {
     const currentIndex = dummyData.findIndex(
@@ -27,7 +38,7 @@ export default function ListItems() {
     }
   };
 
-  const handleSongClick = (song) => {
+  const handleSongClick = (song: Song) => {
     console.log(`Now playing: ${song.music_file}`);
     setCurrentSong(song);
     setIsPlaying(true); // Auto-play the song when clicked
@@ -35,9 +46,9 @@ export default function ListItems() {
 
   const togglePlay = () => {
     if (isPlaying) {
-      audioRef.current.pause();
+      audioRef.current?.pause();
     } else {
-      audioRef.current.play();
+      audioRef.current?.play();
     }
     setIsPlaying(!isPlaying);
   };
@@ -61,29 +72,34 @@ export default function ListItems() {
     const audio = audioRef.current;
 
     const handleTimeUpdate = () => {
-      setCurrentTime(audio.currentTime);
+      if (audio) {
+        setCurrentTime(audio.currentTime);
+      }
     };
 
     const handleDurationChange = () => {
-      setDuration(audio.duration);
+      if (audio) {
+        setDuration(audio.duration);
+      }
     };
 
     const handleEnded = () => {
       playNextSong();
     };
 
-    audio.addEventListener("timeupdate", handleTimeUpdate);
-    audio.addEventListener("durationchange", handleDurationChange);
-    audio.addEventListener("ended", handleEnded);
+    if (audio) {
+      audio.addEventListener("timeupdate", handleTimeUpdate);
+      audio.addEventListener("durationchange", handleDurationChange);
+      audio.addEventListener("ended", handleEnded);
 
-    return () => {
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
-      audio.removeEventListener("durationchange", handleDurationChange);
-      audio.removeEventListener("ended", handleEnded);
-    };
-  }, [currentSong]); // Listen for changes in the current song
-
-  const formatTime = (timeInSeconds) => {
+      return () => {
+        audio.removeEventListener("timeupdate", handleTimeUpdate);
+        audio.removeEventListener("durationchange", handleDurationChange);
+        audio.removeEventListener("ended", handleEnded);
+      };
+    }
+  }, [currentSong]);
+  const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
