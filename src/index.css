@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body :root {
+  height: 100%;
+  background-color: black;
+  color-scheme: dark;
+}
+.resize-div {
+  resize: inline;
+  overflow: auto;
+  resize: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: violet;
+  border-radius: 20px;
+}
+::-webkit-scrollbar-track {
+  width: 8px;
+}
+
+.custom-spin {
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
