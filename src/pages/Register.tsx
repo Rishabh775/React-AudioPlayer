@@ -21,7 +21,7 @@ const Register = () => {
       const { confirmPassword, ...data } = values;
 
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://loop-server.onrender.com/api/auth/register",
         data
       );
       console.log(response);
