@@ -23,7 +23,7 @@ Our Plans for the future features to be roll out
 
 Live link :
 
-https://react-audio-player-five.vercel.app/
+https://loop-six.vercel.app/
 ## Tech Stack
 
 **Client:** React, Redux, TailwindCSS
