@@ -1,116 +1,135 @@
+import { useState, FormEvent, ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useFormik } from "formik";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
+
+interface FormData {
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface ErrorResponse {
+  message: string;
+}
 
 const Register = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = async (values: any) => {
-    // Check if passwords match
-    if (values.password !== values.confirmPassword) {
-      console.error("Passwords do not match");
-      alert("Passwords do not match");
-      return; // Don't proceed with registration
-    }
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
     try {
-      // Remove confirmPassword from values before sending to backend
-      const { confirmPassword, ...data } = values;
-
-      const response = await axios.post(
+      if (
+        !formData.email ||
+        !formData.password ||
+        !formData.username ||
+        !formData.confirmPassword
+      ) {
+        toast.error("Please fill all the fields");
+        return;
+      }
+      // Perform sign up logic...
+      await axios.post<void>(
         "https://loop-server.onrender.com/api/auth/register",
-        data
+        formData
       );
-      console.log(response);
-      navigate("/login"); // Redirect after successful registration
-      toast.success("Successfully Registered in Loop");
+      toast.success("Registration successful!");
+      navigate("/login");
     } catch (error) {
-      console.error(error);
+      console.error("Registration error:", error);
+      const axiosError = error as AxiosError<ErrorResponse>;
+      if (axiosError.response?.data) {
+        toast.error(axiosError.response.data.message);
+      } else {
+        toast.error("An error occurred during registration.");
+      }
     }
   };
 
-  const formik = useFormik({
-    initialValues: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-    validateOnBlur: false,
-    validateOnChange: false,
-    onSubmit: handleSubmit,
-  });
-
   return (
     <>
-      <div className=" w-full">
+      <div className="w-full h-screen">
         <Navbar />
-        <div className=" h-screen pt-8 bg-[url('./assets/images/loginBg.jpg')] bg-cover">
-          <div className=" max-w-xl mx-auto py-20 px-20 bg-[#67656536] shadow-[0px_2px_5px_#ffffff91] filter backdrop-blur-[6px] rounded-xl ">
-            <header className=" text-center">
-              <h2 className="font-bold text-4xl text-white">Join the Party</h2>
+        <div className="h-full pt-8 bg-[url('./assets/images/loginBg.jpg')] bg-cover">
+          <div className="lg:max-w-3xl sm:max-w-lg  max-w-[90%] mx-auto md:py-20 py-16 md:px-20 px-4 bg-[#67656536] shadow-[0px_2px_5px_#ffffff91] filter backdrop-blur-[6px] rounded-xl">
+            <header className="text-center">
+              <h2 className="font-bold md:text-4xl text-3xl text-white">
+                Join the Party
+              </h2>
               <p className="text-gray-100">Where Music Finds you</p>
             </header>
             <form
-              onSubmit={formik.handleSubmit}
-              className=" flex flex-col gap-2 items-center py-4 text-white"
+              onSubmit={handleSignUp}
+              className="flex flex-col gap-2 py-4 text-white"
             >
               <input
                 type="email"
                 name="email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
+                value={formData.email}
+                onChange={handleInputChange}
                 className="px-4 py-3 rounded-lg outline-none bg-transparent border border-slate-700"
-                placeholder="username or email"
+                placeholder="Email"
               />
               <input
                 type="text"
                 name="username"
-                value={formik.values.username}
-                onChange={formik.handleChange}
+                value={formData.username}
+                onChange={handleInputChange}
                 className="px-4 py-3 rounded-lg outline-none bg-transparent border border-slate-700"
-                placeholder="username"
+                placeholder="Username"
               />
               <input
                 type="password"
                 name="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
+                value={formData.password}
+                onChange={handleInputChange}
                 className="px-4 py-3 rounded-lg outline-none bg-transparent border border-slate-700"
-                placeholder="password"
+                placeholder="Password"
               />
               <input
                 type="password"
                 name="confirmPassword"
-                value={formik.values.confirmPassword}
-                onChange={formik.handleChange}
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
                 className="px-4 py-3 rounded-lg outline-none bg-transparent border border-slate-700"
-                placeholder="confirm password"
+                placeholder="Confirm Password"
               />
-              <div className=" flex justify-between text-sm gap-16">
-                <p>
+              <div className="flex justify-between text-sm gap-16">
+                <p className="flex items-center gap-2">
                   <input type="checkbox" />
-                  terms
+                  Terms
                 </p>
-                <Link to={"/phone"} className=" hover:text-rose-400">
-                  using phone
+                <Link to={"/phone"} className="hover:text-rose-400">
+                  Using phone
                 </Link>
               </div>
-              <div>
+              <div className=" flex justify-center">
                 <button
                   type="submit"
-                  className=" bg-teal-500 px-4 mt-3 py-3 w-40 rounded-lg hover:bg-teal-600 duration-300"
+                  className="bg-teal-500 px-4 mt-3 py-3 w-40 rounded-lg hover:bg-teal-600 duration-300"
                 >
                   Register
                 </button>
               </div>
             </form>
-            <p className=" text-center text-white">
+            <p className="text-center text-white">
               Already in the Cult ?{" "}
-              <Link to="/login" className=" text-rose-200 hover:text-rose-300">
+              <Link to="/login" className="text-rose-200 hover:text-rose-300">
                 Login
               </Link>
             </p>

@@ -13,6 +13,17 @@ const Home = lazy(() => import("./pages/Home.tsx"));
 // import Sidebar from "./components/sidebar.tsx";
 // import RightBar from "./components/RightBar.tsx";
 import Loading from "./pages/Loading.tsx";
+import Podcast from "./pages/Podcast.tsx";
+import Offline from "./pages/Offline.tsx";
+import Playlist from "./pages/Playlist.tsx";
+import LikedSongs from "./pages/LikedSongs.tsx";
+import CreatePlaylist from "./pages/CreatePlaylist.tsx";
+import Radio from "./pages/Radio.tsx";
+import LoopOriginals from "./pages/LoopOriginals.tsx";
+import NewReleases from "./pages/NewReleases.tsx";
+import Music from "./pages/Music.tsx";
+import Explore from "./pages/Explore.tsx";
+import Settings from "./pages/Settings.tsx";
 // import Footer from "./components/Footer.tsx";
 // import Navbar from "./components/Navbar.tsx";
 
@@ -29,6 +40,17 @@ const App = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/phone" element={<Phone />} />
               <Route path="/forgot-password" element={<Forgot />} />
+              <Route path="/podcast" element={<Podcast />} />
+              <Route path="/local-music" element={<Offline />} />
+              <Route path="/create-playlist" element={<CreatePlaylist />} />
+              <Route path="/playlist" element={<Playlist />} />
+              <Route path="/liked-songs" element={<LikedSongs />} />
+              <Route path="/radio" element={<Radio />} />
+              <Route path="/new-releases" element={<NewReleases />} />
+              <Route path="/loop-originals" element={<LoopOriginals />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/music" element={<Music />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </Router>
         </Suspense>
