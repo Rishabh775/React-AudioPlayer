@@ -26,22 +26,20 @@ export default function useAudio() {
       );
     }
   }, [currentTrackIndex]);
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // e.preventDefault();
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPlaylist((prev) => [
-        ...prev,
-        {
-          name: file.name,
-          lastModified: file.lastModified,
-          size: file.size,
-          isPlaying: false,
-          links: url,
-        },
-      ]);
-    }
+
+  const handleUpload = (file: File, songDetails: any) => {
+    const url = URL.createObjectURL(file);
+    setPlaylist((prev) => [
+      ...prev,
+      {
+        name: file.name,
+        lastModified: file.lastModified,
+        size: file.size,
+        isPlaying: false,
+        links: url,
+        ...songDetails, // Add song details to the playlist item
+      },
+    ]);
   };
 
   const handleDelete = (lastModified: number) => {
@@ -49,8 +47,6 @@ export default function useAudio() {
       prev.filter((track) => track.lastModified !== lastModified)
     );
   };
-
-  // ++++++++++++++++++++++++++++++++++++++++  Audio functionality +++++++++++++++++++++++++++++++++++++++++++++
 
   const handleTrackEnd = () => {
     setCurrentTrackIndex((prevIndex) =>
